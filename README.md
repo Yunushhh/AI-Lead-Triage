@@ -2,7 +2,7 @@
 
 An enterprise-grade Make.com automation that uses Gemini 2.5 Flash to intelligently triage inbound emails, extract lead data, handle support escalations, and draft contextual replies.
 
-![Scenario Architecture](assets/scenario-overview.png)
+![Scenario Architecture](architecture.png)
 
 ## 📌 Business Value
 This system replaces manual inbox zero routines with an autonomous triage agent:
@@ -22,7 +22,7 @@ This is not a simple linear router; it is built for production resilience:
 4. **Mid-Branch Execution Logic:** Strategically orders database logging before inline escalation filters to ensure 100% data capture regardless of conditional branch drops.
 
 ## 🚀 How to Install & Use
-1. Download the `AI_Lead_Triage_v2_1.json` file from the `/blueprint` folder.
+1. Download the `AI Lead Triage & Support Route.blueprint.json` file from the `/blueprint` folder.
 2. Create a new scenario in Make.com.
 3. Click the `...` (More) menu at the bottom and select **Import Blueprint**.
 4. Map your Google (Gmail & Sheets) connections to the respective modules.
