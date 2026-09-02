@@ -22,8 +22,12 @@ This is not a simple linear router; it is built for production resilience:
 4. **Mid-Branch Execution Logic:** Strategically orders database logging before inline escalation filters to ensure 100% data capture regardless of conditional branch drops.
 
 ## 🚀 How to Install & Use
-1. Download the `AI Lead Triage & Support Route.blueprint.json` file from the `/blueprint` folder.
+1. Download the `AI Lead Triage & Support Route.blueprint.json` file from this repository.
 2. Create a new scenario in Make.com.
 3. Click the `...` (More) menu at the bottom and select **Import Blueprint**.
 4. Map your Google (Gmail & Sheets) connections to the respective modules.
 5. Create a Google Sheet with columns matching the extraction schema (Timestamp, Sender, Subject, Category, Urgency, Sentiment, Action, Draft, Company, Confidence, Action, Phone).
+
+### 💡 Upgrades & Scalability
+* **CRM Integration:** This blueprint uses Google Sheets as a universally accessible database for demonstration. In a production environment, the Sheets modules can easily be swapped out for native CRM routing (HubSpot, GoHighLevel, Airtable, Pipedrive) to drop leads directly into your sales pipeline.
+* **Model Selection:** The scenario is currently configured with the free **Gemini 2.5 Flash** model for fast, cost-effective triage. For highly complex or multilingual inboxes, swapping this for a premium reasoning model (like Gemini 1.5 Pro or OpenAI GPT-4o) is recommended for maximum extraction accuracy.
