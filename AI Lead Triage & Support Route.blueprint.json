@@ -1,0 +1,1817 @@
+{
+    "name": "AI Lead Triage & Support Route",
+    "flow": [
+        {
+            "id": 4,
+            "module": "google-email:triggerWatchNewEmails",
+            "version": 4,
+            "parameters": {
+                "from": "",
+                "size": {
+                    "unit": "M",
+                    "amount": null,
+                    "criteria": "larger"
+                },
+                "limit": 1,
+                "folder": "INBOX",
+                "format": "full",
+                "subject": "",
+                "criteria": "is:unread",
+                "labelIds": "",
+                "markSeen": true,
+                "filterType": "simpleSearch",
+                "__IMTCONN__": 9384017,
+                "excludeWords": "",
+                "includeWords": "",
+                "hasAttachment": false
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 750,
+                    "name": "Watch New Emails (batched)"
+                },
+                "restore": {
+                    "parameters": {
+                        "size": {
+                            "nested": {
+                                "unit": {
+                                    "label": "MB (megabytes)"
+                                },
+                                "criteria": {
+                                    "label": "Greater than"
+                                }
+                            }
+                        },
+                        "folder": {
+                            "label": "Inbox"
+                        },
+                        "format": {
+                            "label": "Full content"
+                        },
+                        "criteria": {
+                            "label": "Only unread messages"
+                        },
+                        "labelIds": {
+                            "label": "Empty"
+                        },
+                        "filterType": {
+                            "label": "Simple filter"
+                        },
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-email"
+                            },
+                            "label": "Yunus's Gmail connection (enuu2066@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-email",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "name": "filterType",
+                        "type": "select",
+                        "label": "Filter type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "simpleSearch",
+                                "gmailSearch"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "type": "select",
+                        "label": "Content format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "full",
+                                "raw",
+                                "metadata",
+                                "minimal"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "folder",
+                        "type": "select",
+                        "label": "Folder",
+                        "required": true
+                    },
+                    {
+                        "name": "labelIds",
+                        "type": "select",
+                        "label": "Label"
+                    },
+                    {
+                        "name": "criteria",
+                        "type": "select",
+                        "label": "Criteria",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "all",
+                                "is:read",
+                                "is:unread"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "markSeen",
+                        "type": "boolean",
+                        "label": "Mark email message(s) as read when fetched"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "required": true,
+                        "validate": {
+                            "max": 500
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "email",
+                        "label": "Sender email address"
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject"
+                    },
+                    {
+                        "name": "includeWords",
+                        "type": "text",
+                        "label": "Has the words"
+                    },
+                    {
+                        "name": "excludeWords",
+                        "type": "text",
+                        "label": "Doesn't have"
+                    },
+                    {
+                        "name": "size",
+                        "spec": [
+                            {
+                                "name": "criteria",
+                                "type": "select",
+                                "label": "Criteria",
+                                "validate": {
+                                    "enum": [
+                                        "larger",
+                                        "smaller"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "amount",
+                                "type": "integer",
+                                "label": "Size",
+                                "validate": {
+                                    "min": 0
+                                }
+                            },
+                            {
+                                "name": "unit",
+                                "type": "select",
+                                "label": "Size unit",
+                                "validate": {
+                                    "enum": [
+                                        "M",
+                                        "K",
+                                        "bytes"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Email size"
+                    },
+                    {
+                        "name": "hasAttachment",
+                        "type": "boolean",
+                        "label": "Only emails with attachments/media",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "Message ID"
+                    },
+                    {
+                        "name": "threadId",
+                        "type": "text",
+                        "label": "Thread ID"
+                    },
+                    {
+                        "name": "internalDate",
+                        "type": "date",
+                        "label": "Date"
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject",
+                        "condition": true
+                    },
+                    {
+                        "name": "fromName",
+                        "type": "text",
+                        "label": "From (name)",
+                        "condition": true
+                    },
+                    {
+                        "name": "fromEmail",
+                        "type": "text",
+                        "label": "From (email)",
+                        "condition": true
+                    },
+                    {
+                        "name": "to",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "name",
+                                    "type": "text",
+                                    "label": "Name"
+                                },
+                                {
+                                    "name": "email",
+                                    "type": "text",
+                                    "label": "Email"
+                                }
+                            ],
+                            "type": "collection"
+                        },
+                        "type": "array",
+                        "label": "To",
+                        "condition": true
+                    },
+                    {
+                        "name": "cc",
+                        "spec": [
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "CC",
+                        "condition": true
+                    },
+                    {
+                        "name": "bcc",
+                        "spec": [
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "BCC",
+                        "condition": true
+                    },
+                    {
+                        "name": "snippet",
+                        "type": "text",
+                        "label": "Snippet"
+                    },
+                    {
+                        "name": "fullTextBody",
+                        "type": "text",
+                        "label": "Full text body",
+                        "condition": true
+                    },
+                    {
+                        "name": "htmlBody",
+                        "type": "text",
+                        "label": "HTML body",
+                        "condition": true
+                    },
+                    {
+                        "name": "hasAttachment",
+                        "type": "boolean",
+                        "label": "Has attachment",
+                        "condition": true
+                    },
+                    {
+                        "name": "hasMedia",
+                        "type": "boolean",
+                        "label": "Has media",
+                        "condition": true
+                    },
+                    {
+                        "name": "sysFolders",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "System folder ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "System folder name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "System folders"
+                    },
+                    {
+                        "name": "categoryFolders",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Category folder ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Category folder name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Category folders"
+                    },
+                    {
+                        "name": "userLabelFolders",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "User label folder ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "User label folder name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "User label folders"
+                    },
+                    {
+                        "name": "labelIds",
+                        "spec": {
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Message folder IDs"
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "Delivered-To",
+                                "type": "text",
+                                "label": "Delivered-To"
+                            },
+                            {
+                                "name": "Received",
+                                "type": "text",
+                                "label": "Received"
+                            },
+                            {
+                                "name": "Date",
+                                "type": "text",
+                                "label": "Date (header)"
+                            },
+                            {
+                                "name": "X-Original-Sender",
+                                "type": "text"
+                            },
+                            {
+                                "name": "Reply-To",
+                                "type": "text"
+                            },
+                            {
+                                "name": "Subject",
+                                "type": "text",
+                                "label": "Subject"
+                            },
+                            {
+                                "name": "From",
+                                "type": "text",
+                                "label": "From"
+                            },
+                            {
+                                "name": "To",
+                                "type": "text",
+                                "label": "To"
+                            },
+                            {
+                                "name": "Message-ID",
+                                "type": "text",
+                                "label": "Message-ID"
+                            },
+                            {
+                                "name": "In-Reply-To",
+                                "type": "text",
+                                "label": "In-Reply-To"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Headers",
+                        "condition": true
+                    },
+                    {
+                        "name": "sizeEstimate",
+                        "type": "number",
+                        "label": "Size estimate"
+                    },
+                    {
+                        "name": "historyId",
+                        "type": "text",
+                        "label": "History ID"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 8,
+            "module": "gemini-ai:simpleTextPrompt",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "model": "gemini-2.5-flash",
+                "textPrompt": "You are an executive inbox triage assistant. Analyze the incoming email below.\r\n\r\nEmail Subject: {{4.subject}}\r\nEmail Body: {{4.fullTextBody}}\r\n\r\nPerform intent analysis and respond ONLY with a raw JSON object. Do NOT include markdown code blocks, ```json backticks, or extra conversational text.\r\n\r\nRequired JSON Structure:\r\n{\r\n  \"category\": \"HOT_LEAD\",\r\n  \"confidence\": 0.92,\r\n  \"urgency_score\": 9,\r\n  \"sentiment\": \"Positive\",\r\n  \"company_name\": \"Acme Corp\",\r\n  \"contact_phone\": \"\",\r\n  \"requested_action\": \"schedule_call\",\r\n  \"suggested_reply\": \"Hi, thank you for reaching out! We would love to assist you with your project. When are you free for a 10-minute discovery call?\"\r\n}\r\n\r\nClassification Rules:\r\n1. \"category\":\r\n   - Use \"HOT_LEAD\" if the email asks for pricing, sales, hiring services, quotes, or scheduling a meeting.\r\n   - Use \"SUPPORT\" if the email reports a bug, error, billing issue, refund, or complaint.\r\n   - Use \"GENERAL\" if the email is newsletters, marketing spam, job applications, or general questions.\r\n   - Use \"NEEDS_REVIEW\" if the email is ambiguous, written in a language you cannot confidently classify, appears to be spam but you are not certain, or does not clearly fit any category above.\r\n\r\n2. \"confidence\":\r\n   - A number between 0 and 1 for how confident you are in the chosen category. Use a value below 0.6 only when category is also set to \"NEEDS_REVIEW\".\r\n\r\n3. \"urgency_score\":\r\n   - Integer scale from 1 (lowest) to 10 (highest priority/immediate business value).\r\n\r\n4. \"sentiment\":\r\n   - Must be strictly \"Positive\", \"Neutral\", or \"Negative\".\r\n\r\n5. \"company_name\":\r\n   - The sender's company name if mentioned or inferable from a signature/domain, otherwise an empty string.\r\n\r\n6. \"contact_phone\":\r\n   - A phone number if one appears in the email, otherwise an empty string.\r\n\r\n7. \"requested_action\":\r\n   - A short snake_case label for what the sender wants (e.g. schedule_call, request_refund, report_bug, general_inquiry), or an empty string if unclear.\r\n\r\n8. \"suggested_reply\":\r\n   - Write a professional, context-specific 2-sentence response addressing the sender's inquiry. If category is NEEDS_REVIEW, instead write exactly: \"This message requires manual review before a reply is sent.\""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 750,
+                    "name": "[AI] Classify Intent & Extract Entities"
+                },
+                "restore": {
+                    "expect": {
+                        "model": {
+                            "label": "Gemini 2.5 Flash — Applies smart reasoning to fast data tasks while ensuring quick response times"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "gemini-3.6-flash",
+                                "gemini-3.5-flash",
+                                "gemini-3.1-pro-preview",
+                                "gemini-3-flash-preview",
+                                "gemini-2.5-pro",
+                                "gemini-2.5-flash"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "textPrompt",
+                        "type": "text",
+                        "label": "Text prompt",
+                        "required": true
+                    }
+                ]
+            },
+            "onerror": [
+                {
+                    "id": 22,
+                    "module": "builtin:Break",
+                    "version": 1,
+                    "parameters": {},
+                    "mapper": {
+                        "count": "3",
+                        "retry": "{{true}}",
+                        "interval": "1"
+                    },
+                    "metadata": {
+                        "designer": {
+                            "x": 600,
+                            "y": 1500
+                        },
+                        "restore": {
+                            "expect": {
+                                "retry": {
+                                    "mode": "edit"
+                                }
+                            }
+                        },
+                        "expect": [
+                            {
+                                "name": "retry",
+                                "type": "boolean",
+                                "label": "Retry automatically",
+                                "required": true
+                            },
+                            {
+                                "name": "count",
+                                "type": "uinteger",
+                                "label": "Number of retries",
+                                "required": true,
+                                "validate": {
+                                    "max": 10000,
+                                    "min": 1
+                                }
+                            },
+                            {
+                                "name": "interval",
+                                "type": "uinteger",
+                                "label": "Minutes between retries",
+                                "required": true,
+                                "validate": {
+                                    "max": 44640,
+                                    "min": 1
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {
+                "type": 510206
+            },
+            "mapper": {
+                "json": "{{8.result}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 600,
+                    "name": "[Parser] Validate Structured JSON"
+                },
+                "restore": {
+                    "parameters": {
+                        "type": {
+                            "label": "AI Inbox Triage Schema v2"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "help": "",
+                        "name": "category",
+                        "type": "text",
+                        "label": "Category",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "confidence",
+                        "type": "number",
+                        "label": "Confidence",
+                        "default": null,
+                        "required": false
+                    },
+                    {
+                        "help": "",
+                        "name": "urgency_score",
+                        "type": "number",
+                        "label": "Urgency score",
+                        "default": null,
+                        "required": false
+                    },
+                    {
+                        "help": "",
+                        "name": "sentiment",
+                        "type": "text",
+                        "label": "Sentiment",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "company_name",
+                        "type": "text",
+                        "label": "Company name",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "contact_phone",
+                        "type": "text",
+                        "label": "Contact phone",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "requested_action",
+                        "type": "text",
+                        "label": "Requested action",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    },
+                    {
+                        "help": "",
+                        "name": "suggested_reply",
+                        "type": "text",
+                        "label": "Suggested reply",
+                        "default": null,
+                        "required": false,
+                        "multiline": false
+                    }
+                ]
+            },
+            "onerror": [
+                {
+                    "id": 19,
+                    "module": "google-sheets:addRow",
+                    "version": 2,
+                    "parameters": {
+                        "__IMTCONN__": 9385858
+                    },
+                    "mapper": {
+                        "from": "drive",
+                        "mode": "select",
+                        "values": {
+                            "0": "{{now}}",
+                            "1": "{{4.fromEmail}}",
+                            "2": "{{4.subject}}",
+                            "3": "ERROR",
+                            "6": "Failed to parse AI output - Flagged for manual review"
+                        },
+                        "sheetId": "AI_Inbox_Triage_Log",
+                        "spreadsheetId": "/17AvF2pkCdLETWEp7-rBSr1MBXK3Zbnrg/1cPk6WlSG9XJiGta2HiL8kNM23xVhE7QFNsPTdZHMiU0",
+                        "includesHeaders": true,
+                        "insertDataOption": "INSERT_ROWS",
+                        "useColumnHeaders": false,
+                        "valueInputOption": "USER_ENTERED",
+                        "insertUnformatted": false
+                    },
+                    "metadata": {
+                        "designer": {
+                            "x": 900,
+                            "y": 1200,
+                            "name": "[Error Log] Malformed Payloads"
+                        },
+                        "restore": {
+                            "expect": {
+                                "from": {
+                                    "label": "My Drive"
+                                },
+                                "mode": {
+                                    "label": "Search by path"
+                                },
+                                "sheetId": {
+                                    "label": "AI_Inbox_Triage_Log"
+                                },
+                                "spreadsheetId": {
+                                    "path": [
+                                        "Make.com",
+                                        "AI_Inbox_Triage_Log"
+                                    ]
+                                },
+                                "includesHeaders": {
+                                    "label": "Yes"
+                                },
+                                "insertDataOption": {
+                                    "mode": "chose",
+                                    "label": "Insert rows"
+                                },
+                                "useColumnHeaders": {
+                                    "label": "No"
+                                },
+                                "valueInputOption": {
+                                    "mode": "chose",
+                                    "label": "User entered"
+                                },
+                                "insertUnformatted": {
+                                    "mode": "chose"
+                                }
+                            },
+                            "parameters": {
+                                "__IMTCONN__": {
+                                    "data": {
+                                        "scoped": "true",
+                                        "connection": "google"
+                                    },
+                                    "label": "Yunus's Google connection"
+                                }
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "__IMTCONN__",
+                                "type": "account:google",
+                                "label": "Connection",
+                                "required": true
+                            }
+                        ],
+                        "expect": [
+                            {
+                                "name": "mode",
+                                "type": "select",
+                                "label": "Search Method",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "select",
+                                        "fromAll",
+                                        "map"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "insertUnformatted",
+                                "type": "boolean",
+                                "label": "Unformatted",
+                                "required": true
+                            },
+                            {
+                                "name": "valueInputOption",
+                                "type": "select",
+                                "label": "Value input option",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "USER_ENTERED",
+                                        "RAW"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "insertDataOption",
+                                "type": "select",
+                                "label": "Insert data option",
+                                "validate": {
+                                    "enum": [
+                                        "INSERT_ROWS",
+                                        "OVERWRITE"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "from",
+                                "type": "select",
+                                "label": "Drive",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        "drive",
+                                        "share",
+                                        "team"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "spreadsheetId",
+                                "type": "file",
+                                "label": "Spreadsheet Name",
+                                "required": true
+                            },
+                            {
+                                "name": "sheetId",
+                                "type": "select",
+                                "label": "Sheet Name",
+                                "required": true
+                            },
+                            {
+                                "name": "includesHeaders",
+                                "type": "select",
+                                "label": "Table contains headers",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        true,
+                                        false
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "useColumnHeaders",
+                                "type": "select",
+                                "label": "Use column headers as IDs of the columns",
+                                "required": true,
+                                "validate": {
+                                    "enum": [
+                                        true,
+                                        false
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "values",
+                                "spec": [
+                                    {
+                                        "name": "0",
+                                        "type": "text",
+                                        "label": "Timestamp (A)"
+                                    },
+                                    {
+                                        "name": "1",
+                                        "type": "text",
+                                        "label": "Sender Email (B)"
+                                    },
+                                    {
+                                        "name": "2",
+                                        "type": "text",
+                                        "label": "Subject (C)"
+                                    },
+                                    {
+                                        "name": "3",
+                                        "type": "text",
+                                        "label": "Category (D)"
+                                    },
+                                    {
+                                        "name": "4",
+                                        "type": "text",
+                                        "label": "Urgency Score (1-10) (E)"
+                                    },
+                                    {
+                                        "name": "5",
+                                        "type": "text",
+                                        "label": "Sentiment (F)"
+                                    },
+                                    {
+                                        "name": "6",
+                                        "type": "text",
+                                        "label": "Action Taken (G)"
+                                    },
+                                    {
+                                        "name": "7",
+                                        "type": "text",
+                                        "label": "Suggested Draft (H)"
+                                    },
+                                    {
+                                        "name": "8",
+                                        "type": "text",
+                                        "label": "Company Name (I)"
+                                    },
+                                    {
+                                        "name": "9",
+                                        "type": "text",
+                                        "label": "Confidence (J)"
+                                    },
+                                    {
+                                        "name": "10",
+                                        "type": "text",
+                                        "label": "Requested Action (K)"
+                                    },
+                                    {
+                                        "name": "11",
+                                        "type": "text",
+                                        "label": "Contact Phone (L)"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Values in columns"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": 20,
+                    "module": "builtin:Resume",
+                    "version": 1,
+                    "parameters": {},
+                    "mapper": {
+                        "category": "NEEDS_REVIEW",
+                        "sentiment": "Unknown",
+                        "confidence": "0",
+                        "company_name": "",
+                        "contact_phone": "",
+                        "urgency_score": "5",
+                        "suggested_reply": "This message requires manual review before a reply is sent.",
+                        "requested_action": ""
+                    },
+                    "metadata": {
+                        "designer": {
+                            "x": 1200,
+                            "y": 1200
+                        },
+                        "restore": {},
+                        "expect": [
+                            {
+                                "name": "category",
+                                "type": "text",
+                                "label": "Category"
+                            },
+                            {
+                                "name": "confidence",
+                                "type": "number",
+                                "label": "Confidence"
+                            },
+                            {
+                                "name": "urgency_score",
+                                "type": "number",
+                                "label": "Urgency score"
+                            },
+                            {
+                                "name": "sentiment",
+                                "type": "text",
+                                "label": "Sentiment"
+                            },
+                            {
+                                "name": "company_name",
+                                "type": "text",
+                                "label": "Company name"
+                            },
+                            {
+                                "name": "contact_phone",
+                                "type": "text",
+                                "label": "Contact phone"
+                            },
+                            {
+                                "name": "requested_action",
+                                "type": "text",
+                                "label": "Requested action"
+                            },
+                            {
+                                "name": "suggested_reply",
+                                "type": "text",
+                                "label": "Suggested reply"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "parameters": {},
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 450
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 12,
+                            "module": "google-email:sendAnEmail",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 9384017
+                            },
+                            "filter": {
+                                "name": "Is Hot Lead",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{9.category}}",
+                                            "b": "HOT_LEAD",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "to": [
+                                    "yunushm2066@gmail.com"
+                                ],
+                                "content": "🚨 <b>NEW HIGH-PRIORITY LEAD RECEIVED</b><br><br><b>From:</b> {{4.fromEmail}}<br><b>Company:</b> {{9.company_name}}<br><b>Subject:</b> {{4.subject}}<br><b>Urgency Score:</b> {{9.urgency_score}}/10<br><b>Sentiment:</b> {{9.sentiment}}<br><b>Confidence:</b> {{9.confidence}}<br><b>Requested action:</b> {{9.requested_action}}<br><br>----------------------------------------<br><b>AI SUGGESTED DRAFT REPLY:</b><br>{{9.suggested_reply}}<br><br>[ADD YOUR CALENDLY / BOOKING LINK HERE if you want the reply to include one]<br>----------------------------------------<br><br><i>Logged automatically by Make.com AI Triage Bot.</i>",
+                                "subject": "HOT LEAD DETECTED: {{4.subject}}",
+                                "bodyType": "rawHtml"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 0,
+                                    "name": "[Sales] Instant VIP Auto-Responder"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw HTML"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-email"
+                                            },
+                                            "label": "Yunus's Gmail connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-email",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "rawHtml",
+                                                "collection"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "module": "google-sheets:addRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 9385858
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "mode": "select",
+                                "values": {
+                                    "0": "{{now}}",
+                                    "1": "{{4.fromEmail}}",
+                                    "2": "{{4.subject}}",
+                                    "3": "{{9.category}}",
+                                    "4": "{{9.urgency_score}}",
+                                    "5": "{{9.sentiment}}",
+                                    "6": "Email alert sent + Logged",
+                                    "7": "{{9.suggested_reply}}",
+                                    "8": "{{9.company_name}}",
+                                    "9": "{{9.confidence}}",
+                                    "10": "{{9.requested_action}}",
+                                    "11": "{{9.contact_phone}}"
+                                },
+                                "sheetId": "AI_Inbox_Triage_Log",
+                                "spreadsheetId": "/17AvF2pkCdLETWEp7-rBSr1MBXK3Zbnrg/1cPk6WlSG9XJiGta2HiL8kNM23xVhE7QFNsPTdZHMiU0",
+                                "includesHeaders": true,
+                                "insertDataOption": "INSERT_ROWS",
+                                "useColumnHeaders": false,
+                                "valueInputOption": "USER_ENTERED",
+                                "insertUnformatted": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 0,
+                                    "name": "[DB] Log VIP Lead"
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            },
+                                            "label": "Yunus's Google connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 13,
+                            "module": "google-email:createADraft",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 9384017
+                            },
+                            "filter": {
+                                "name": "Is Support",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{9.category}}",
+                                            "b": "SUPPORT",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "to": [
+                                    "{{4.fromEmail}}"
+                                ],
+                                "content": "{{9.suggested_reply}}",
+                                "subject": "{{4.subject}}",
+                                "bodyType": "rawHtml",
+                                "threadId": "{{4.threadId}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 300,
+                                    "name": "[Support] AI Response Draft (for review)"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw HTML"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-email"
+                                            },
+                                            "label": "Yunus's Gmail connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-email",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "rawHtml",
+                                                "collection"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "threadId",
+                                        "type": "text",
+                                        "label": "Thread ID"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 30,
+                            "module": "google-email:sendAnEmail",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 9384017
+                            },
+                            "mapper": {
+                                "to": [
+                                    "{{4.fromEmail}}"
+                                ],
+                                "content": "Hi,<br><br>Thanks for reaching out — we've received your message and a member of our team will follow up shortly.<br><br>Best,<br>Support Team",
+                                "subject": "Re: {{4.subject}}",
+                                "bodyType": "rawHtml",
+                                "threadId": "{{4.threadId}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 300,
+                                    "name": "[Support] Auto-Acknowledgment to Sender"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw HTML"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-email"
+                                            },
+                                            "label": "Yunus's Gmail connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-email",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "rawHtml",
+                                                "collection"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "threadId",
+                                        "type": "text",
+                                        "label": "Thread ID"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 16,
+                            "module": "google-sheets:addRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 9385858
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "mode": "select",
+                                "values": {
+                                    "0": "{{now}}",
+                                    "1": "{{4.fromEmail}}",
+                                    "2": "{{4.subject}}",
+                                    "3": "{{9.category}}",
+                                    "4": "{{9.urgency_score}}",
+                                    "5": "{{9.sentiment}}",
+                                    "6": "Support Draft Created + Ack Sent",
+                                    "7": "{{9.suggested_reply}}",
+                                    "8": "{{9.company_name}}",
+                                    "9": "{{9.confidence}}",
+                                    "10": "{{9.requested_action}}",
+                                    "11": "{{9.contact_phone}}"
+                                },
+                                "sheetId": "AI_Inbox_Triage_Log",
+                                "spreadsheetId": "/17AvF2pkCdLETWEp7-rBSr1MBXK3Zbnrg/1cPk6WlSG9XJiGta2HiL8kNM23xVhE7QFNsPTdZHMiU0",
+                                "includesHeaders": true,
+                                "insertDataOption": "INSERT_ROWS",
+                                "useColumnHeaders": false,
+                                "valueInputOption": "USER_ENTERED",
+                                "insertUnformatted": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 300,
+                                    "name": "[DB] Log Support Ticket"
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            },
+                                            "label": "Yunus's Google connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 31,
+                            "module": "google-email:sendAnEmail",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 9384017
+                            },
+                            "filter": {
+                                "name": "Negative + Urgent Support",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{9.sentiment}}",
+                                            "b": "Negative",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{9.urgency_score}}",
+                                            "b": "8",
+                                            "o": "text:equal"
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "a": "{{9.sentiment}}",
+                                            "b": "Negative",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{9.urgency_score}}",
+                                            "b": "9",
+                                            "o": "text:equal"
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "a": "{{9.sentiment}}",
+                                            "b": "Negative",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{9.urgency_score}}",
+                                            "b": "10",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "to": [
+                                    "yunushm2066@gmail.com"
+                                ],
+                                "content": "⚠️ <b>URGENT NEGATIVE SUPPORT TICKET</b><br><br><b>From:</b> {{4.fromEmail}}<br><b>Subject:</b> {{4.subject}}<br><b>Urgency Score:</b> {{9.urgency_score}}/10<br><b>Sentiment:</b> {{9.sentiment}}<br><br>A draft reply is waiting in Gmail drafts — this one may need a faster response than usual.",
+                                "subject": "⚠️ Urgent support escalation: {{4.subject}}",
+                                "bodyType": "rawHtml"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 300,
+                                    "name": "[Support] Escalation Alert (negative + urgent)"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw HTML"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-email"
+                                            },
+                                            "label": "Yunus's Gmail connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-email",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "rawHtml",
+                                                "collection"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 18,
+                            "module": "google-sheets:addRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 9385858
+                            },
+                            "filter": {
+                                "name": "Is General",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{9.category}}",
+                                            "b": "GENERAL",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "mode": "select",
+                                "values": {
+                                    "0": "{{now}}",
+                                    "1": "{{4.fromEmail}}",
+                                    "2": "{{4.subject}}",
+                                    "3": "{{9.category}}",
+                                    "4": "{{9.urgency_score}}",
+                                    "5": "{{9.sentiment}}",
+                                    "6": "Logged Only",
+                                    "7": "{{9.suggested_reply}}",
+                                    "8": "{{9.company_name}}",
+                                    "9": "{{9.confidence}}",
+                                    "10": "{{9.requested_action}}",
+                                    "11": "{{9.contact_phone}}"
+                                },
+                                "sheetId": "AI_Inbox_Triage_Log",
+                                "spreadsheetId": "/17AvF2pkCdLETWEp7-rBSr1MBXK3Zbnrg/1cPk6WlSG9XJiGta2HiL8kNM23xVhE7QFNsPTdZHMiU0",
+                                "includesHeaders": true,
+                                "insertDataOption": "INSERT_ROWS",
+                                "useColumnHeaders": false,
+                                "valueInputOption": "USER_ENTERED",
+                                "insertUnformatted": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 600,
+                                    "name": "[DB] Log General Inquiries"
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            },
+                                            "label": "Yunus's Google connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 40,
+                            "module": "google-email:sendAnEmail",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 9384017
+                            },
+                            "filter": {
+                                "name": "Needs Review",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{9.category}}",
+                                            "b": "NEEDS_REVIEW",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "to": [
+                                    "yunushm2066@gmail.com"
+                                ],
+                                "content": "🔎 <b>EMAIL NEEDS MANUAL REVIEW</b><br><br><b>From:</b> {{4.fromEmail}}<br><b>Subject:</b> {{4.subject}}<br><b>AI Confidence:</b> {{9.confidence}}<br><br>The AI couldn't confidently classify this one (or its response failed to parse). Please review the original email directly.",
+                                "subject": "Needs manual review: {{4.subject}}",
+                                "bodyType": "rawHtml"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 900,
+                                    "name": "[Review] Low-Confidence Alert"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw HTML"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-email"
+                                            },
+                                            "label": "Yunus's Gmail connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-email",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "rawHtml",
+                                                "collection"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 41,
+                            "module": "google-sheets:addRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 9385858
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "mode": "select",
+                                "values": {
+                                    "0": "{{now}}",
+                                    "1": "{{4.fromEmail}}",
+                                    "2": "{{4.subject}}",
+                                    "3": "{{9.category}}",
+                                    "4": "{{9.urgency_score}}",
+                                    "5": "{{9.sentiment}}",
+                                    "6": "Needs Review - Manual Classification Required",
+                                    "7": "{{9.suggested_reply}}",
+                                    "8": "{{9.company_name}}",
+                                    "9": "{{9.confidence}}",
+                                    "10": "{{9.requested_action}}",
+                                    "11": "{{9.contact_phone}}"
+                                },
+                                "sheetId": "AI_Inbox_Triage_Log",
+                                "spreadsheetId": "/17AvF2pkCdLETWEp7-rBSr1MBXK3Zbnrg/1cPk6WlSG9XJiGta2HiL8kNM23xVhE7QFNsPTdZHMiU0",
+                                "includesHeaders": true,
+                                "insertDataOption": "INSERT_ROWS",
+                                "useColumnHeaders": false,
+                                "valueInputOption": "USER_ENTERED",
+                                "insertUnformatted": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 900,
+                                    "name": "[DB] Log Needs-Review Item"
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            },
+                                            "label": "Yunus's Google connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": true,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}
